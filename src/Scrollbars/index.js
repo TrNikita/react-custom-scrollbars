@@ -66,6 +66,8 @@ export default class Scrollbars extends Component {
         this.handleDrag = this.handleDrag.bind(this);
         this.handleDragEnd = this.handleDragEnd.bind(this);
 
+        this.resizeObserver = null;
+
         this.state = {
             didMountUniversal: false
         };
@@ -226,9 +228,25 @@ export default class Scrollbars extends Component {
         thumbHorizontal.addEventListener('mousedown', this.handleHorizontalThumbMouseDown);
         thumbVertical.addEventListener('mousedown', this.handleVerticalThumbMouseDown);
         window.addEventListener('resize', this.handleWindowResize);
+
+        this.resizeObserver = new ResizeObserver((entries) => {
+            for (var i = 0; i < entries.length; i++) {
+                console.log('this', this);
+                console.log('entries', entries);
+                console.log('entries[i].target', entries[i].target);
+                
+                console.log('НОВЫЙ! Размер элемента view изменился');
+                
+                this.handleWindowResize();
+                this.update();
+            }
+        });
+                           
+        this.resizeObserver.observe(view);
     }
 
     removeListeners() {
+        console.log('НОВЫЙ_removeListeners');
         const { forceActivate } = this.props;
         /* istanbul ignore if */
         if (typeof document === 'undefined' || !this.view) return;
@@ -246,6 +264,13 @@ export default class Scrollbars extends Component {
         window.removeEventListener('resize', this.handleWindowResize);
         // Possibly setup by `handleDragStart`
         this.teardownDragging();
+
+        if (this.resizeObserver) {
+
+            console.log(' REMOVE_this.resizeObserver');
+           
+            this.resizeObserver.disconnect();
+        }
     }
 
     handleScroll(event) {
@@ -285,6 +310,7 @@ export default class Scrollbars extends Component {
     }
 
     handleWindowResize() {
+        console.log('handleWindowResize');
         this.update();
     }
 
@@ -442,6 +468,7 @@ export default class Scrollbars extends Component {
     }
 
     update(callback) {
+        console.log('update');
         this.raf(() => this._update(callback));
     }
 
