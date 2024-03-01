@@ -1,7 +1,9 @@
+/* eslint-disable no-console */
 import raf, { cancel as caf } from 'raf';
 import css from 'dom-css';
 import { Component, createElement, cloneElement } from 'react';
 import PropTypes from 'prop-types';
+import ResizeObserver from 'resize-observer-polyfill';
 
 import isString from '../utils/isString';
 import getScrollbarWidth from '../utils/getScrollbarWidth';
@@ -230,18 +232,22 @@ export default class Scrollbars extends Component {
         window.addEventListener('resize', this.handleWindowResize);
 
         this.resizeObserver = new ResizeObserver((entries) => {
-            for (var i = 0; i < entries.length; i++) {
+            for (let i = 0; i < entries.length; i++) {
+                // eslint-disable-next-line no-console
                 console.log('this', this);
+                // eslint-disable-next-line no-console
                 console.log('entries', entries);
+                // eslint-disable-next-line no-console
                 console.log('entries[i].target', entries[i].target);
-                
+
+                // eslint-disable-next-line no-console
                 console.log('НОВЫЙ! Размер элемента view изменился');
-                
+
                 this.handleWindowResize();
                 this.update();
             }
         });
-                           
+
         this.resizeObserver.observe(view);
     }
 
@@ -266,9 +272,8 @@ export default class Scrollbars extends Component {
         this.teardownDragging();
 
         if (this.resizeObserver) {
-
             console.log(' REMOVE_this.resizeObserver');
-           
+
             this.resizeObserver.disconnect();
         }
     }
